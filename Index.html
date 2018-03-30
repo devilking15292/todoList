@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<script src="./angular.min.js"></script>
+<body ng-app="myApp" ng-controller="todoCtrl">
+
+<h2>Todo List</h2>
+
+<form ng-submit="todoAdd()">
+    <input type="text" ng-model="todoInput" size="50" placeholder="Add New">
+    <input type="submit" value="Add New">
+</form>
+
+<br>
+<div style="position: relative">
+    <div style="display:inline-block;width:30%">
+        <h1>TO-DO</h1>
+        <div ng-repeat="x in todoList" >
+            <input type="checkbox" ng-model="x.inprogress"> <span ng-bind="x.todoText"></span>
+        </div>
+        <p><button ng-click="inProgressFun()">mark inprogress</button></p>
+    </div>
+
+    <div style="display:inline-block;width:30%; position: absolute; top:0">
+        <h1>In Progress</h1>
+        <div ng-repeat="x in inprogress" >
+            <input type="checkbox" ng-model="x.done"> <span ng-bind="x.todoText"></span>
+        </div>
+        <p><button ng-click="remove()">Remove marked</button></p>
+    </div>
+
+    <div style="display:inline-block;width:30%;position:absolute; right:0">
+        <h1>Completed</h1>
+        <ul ng-repeat="x in completed">
+            <li ng-bind="x.todoText"></li>
+        </ul>
+    </div>
+</div>
+
+
+
+<script>
+var app = angular.module('myApp', []); 
+app.controller('todoCtrl', function($scope) {
+    $scope.todoList = [];
+    $scope.completed = [];
+    $scope.inprogress = [];
+
+    $scope.todoAdd = function() {
+        if($scope.todoInput!=="") {
+            $scope.todoList.push({todoText: $scope.todoInput, done:false, inprogress: false});
+            $scope.todoInput = "";
+        }
+    };
+
+    $scope.inProgressFun = function() {
+        var oldList = $scope.todoList;
+        $scope.todoList = [];
+        angular.forEach(oldList, function(x) {
+            if (!x.inprogress) {
+                $scope.todoList.push(x);
+            } else {
+                $scope.inprogress.push(x);
+            }
+        });
+    };
+
+    $scope.remove = function() {
+        var oldList = $scope.inprogress;
+        $scope.inprogress = [];
+        angular.forEach(oldList, function(x) {
+            if (!x.done) {
+                $scope.inprogress.push(x);
+            } else {
+                $scope.completed.push(x);
+            }
+        });
+    };
+});
+</script>
+
+</body>
+</html>
